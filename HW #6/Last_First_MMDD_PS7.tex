@@ -1,0 +1,287 @@
+% Document formating
+\documentclass[12pt]{article}
+\setlength{\oddsidemargin}{0in}
+\setlength{\evensidemargin}{0in}
+\setlength{\textwidth}{6.5in}
+\setlength{\parskip}{\baselineskip}
+\usepackage{amsmath,amsfonts,amssymb,wasysym}
+\setlength{\evensidemargin}{1in}
+\addtolength{\evensidemargin}{-1in}
+\setlength{\oddsidemargin}{1.5in}
+\addtolength{\oddsidemargin}{-1.5in}
+\setlength{\topmargin}{1in}
+\addtolength{\topmargin}{-1.5in}
+\setlength{\textwidth}{16cm}
+\setlength{\textheight}{23cm}
+\setlength{\parskip}{0.75cm}
+
+% Brackets
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+% Typesetting options
+\usepackage{fancyvrb}
+\usepackage{tgbonum}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage [english]{babel}
+\usepackage [autostyle, english = american]{csquotes}
+\MakeOuterQuote{"}
+\usepackage{upquote}
+\usepackage{scrextend}
+\addtokomafont{labelinglabel}{\sffamily}
+\usepackage[none]{hyphenat}
+\usepackage{url}
+
+% Tikz settings
+\usepackage{tikz}
+\usetikzlibrary{trees}
+\usetikzlibrary {positioning}
+\definecolor {mypurple}{cmyk}{0.6,0.4,0.1,0}
+\definecolor {myred}{cmyk}{0,0.3,0.3,0}
+\usetikzlibrary{fit,shapes.misc}
+
+% Other math tools
+\usepackage{mathtools}
+
+% Other useful options
+\usepackage[table]{colortbl}
+
+% Other graphics
+\graphicspath{{PS 7/}}
+
+% Links
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+ 
+\urlstyle{same}
+
+% --------------------------------
+\begin{document}
+
+% ------------- HEADER -----------
+\noindent CSCI 3104, Fall 2017 \hfill Problem Set 7 \\
+STUDENT NAME (MM/DD) \\
+email@colorado.edu \\
+Coding Language: Python
+
+\noindent\hrulefill
+
+{\fontfamily{cmr}\selectfont
+
+% ******************* PROBLEM 1 *********************
+\section*{{\fontfamily{qcr}\selectfont Problem 1}}
+\textit{(45 pts) Recall that the string alignment problem takes as input two strings x and y,
+composed of symbols $x_i, y_j ∈ Σ$, for a fixed symbol set $Σ$, and returns a minimal-cost
+set of edit operations for transforming the string x into string y. Let x contain $n_x$ symbols, let y contain $n_y$ symbols, and let the set of edit operations be those defined in the lecture notes (substitution, insertion, deletion, and transposition). Let the cost of indel be 1, the cost of swap be 10 (plus the cost of the two sub ops), and the cost of sub be 10, except when $x_i = y_j$, which is a “no-op” and has cost 0. In this problem, we will implement and apply three functions.}
+\begin{enumerate}
+\item[(i)] \textit{alignStrings(x,y) takes as input two ASCII strings x and y, and runs a dynamic programming algorithm to return the cost matrix S, which contains the optimal costs for all the sub-problems for aligning these two strings.}
+\begin{small}
+\begin{verbatim}
+alignStrings(x,y) {
+    S = table of length nx by ny
+    Initialize S
+    for i = 1 to nx:
+        for j = 1 to ny:
+            S[i,j] = cost(i,j)
+    return S
+}
+\end{verbatim}
+\end{small}
+
+\item[(ii)] \textit{extractAlignment(S,x,y) takes as input an optimal cost matrix S, strings x, y, and returns a vector $a$ that represents an optimal sequence of edit operations to convert x into y. This optimal sequence is recovered by finding a path on the implicit DAG of decisions made by alignStrings to obtain the value $S[n_x, n_y]$, starting from $S[0,0]$.}
+\begin{small}
+\begin{verbatim}
+extractAllignment(S,x,y) {
+    Initialize a
+    [i,j] = [nx,ny]
+    while i > 0 or j > 0:
+        a[i] = determineOptimalOp(S,i,j,x,y)
+        [i,j] = updateIndices(S,i,j,a)
+    return a
+}
+\end{verbatim}
+\end{small}
+\textit{When storing the sequence of edit operations in a, use a special symbol to denote
+no-ops.}
+
+\item[(iii)] \textit{commonSubstrings(x,L,a) which takes as input the ASCII string x, an integer $1 \leq L \leq n_x$, and an optimal sequence a of edits to x, which would transform x into y. This function returns each of the substrings of length at least L in x that aligns exactly, via a run of no-ops, to a substring in y.}
+\begin{enumerate}
+\item[(a)] \textit{From scratch, implement the functions alignStrings, extractAlignment, and commonSubstrings. You may not use any library functions that make their implementation trivial. Within your implementation of extractAlignment, ties must be broken uniformly at random.\\
+Submit (i) a paragraph for each function that explains how you implemented it (describe how it works and how it uses its data structures), and (ii) your code implementation, with code comments.\\
+Hint: test your code by reproducing the \textbf{APE / STEP} and the \textbf{EXPONENTIAL / POLYNOMIAL} examples in the lecture notes (to do this exactly, you'll need to use unit costs instead of the ones given above).}
+\\\\
+ANSWER
+\\
+\item[(b)] \textit{Using asymptotic analysis, determine the running time of the call commonSubstrings(x, L, extractAlignment(alignStrings(x,y), x,y ) ). Justify your answer.}
+\\\\
+ANSWER
+\\
+\item[(c)] \textit{(15 pts extra credit) Describe an algorithm for counting the number of optimal alignments, given an optimal cost matrix S. Prove that your algorithm is correct, and give is asymptotic running time.\\
+Hint: Convert this problem into a form that allows us to apply an algorithm we've already seen.}
+\\\\
+ANSWER
+\\
+\item[(d)] \textit{String allignment algorithms can be used to detect changes between different versions of the same document (as in version control systems) or to detect verbatim copying between different documents (as in plagerism detection systems).\\
+The two \textbf{data\_string} files for PS7 (see class Moodle) contain actual documents recently released by two independent organizations. Use your functions from (1a) to align the text of these two documents. Present the results of your analysis, including a reporting of all substrings in x of length $L=10$ or more that could have been taken from y, and briefly comment on whether these documents could be reasonably considered original works, under CU's academic honesty policy.}
+\\\\
+ANSWER
+\\
+\end{enumerate}
+\endgroup
+
+\newpage
+% ******************* PROBLEM 2 *********************
+\section*{{\fontfamily{qcr}\selectfont Problem 2}}
+\textit{(10 pts) Ginerva Weasley is playing with the network given below. Help her calculate the number of paths from node 1 to node 14.\\
+Hint: assume a "path" must have one edge in it to be well defined, and use dynamic programming to fill in a table that counts the number of paths from each node j to 14 down to 1.}
+\begin{center}
+\begin{tikzpicture}[node distance=5mm,
+			      terminal/.style={
+				% The shape:
+				rounded rectangle,
+				minimum size=6mm,
+				% The rest
+				very thick,draw=black!50,
+				top color=white,bottom color=black!20,
+				font=\ttfamily}]
+	
+	\matrix[row sep=5mm,column sep=5mm] {
+	% First Row:
+	\node (1) [terminal] {$1$}; &
+	\node (2) [terminal] {$2$}; &
+	\node (3) [terminal] {$3$}; &
+	\node (4) [terminal] {$4$}; &
+	\node (5) [terminal] {$5$}; &
+	\node (6) [terminal] {$6$}; &
+	&\\
+	% Second Row:
+	&
+	\node (7) [terminal] {$7$}; &
+	\node (8) [terminal] {$8$}; &
+	\node (9) [terminal] {$9$}; &
+	\node (10) [terminal] {$10$}; &
+	\node (11) [terminal] {$11$}; &
+	&\\
+	% Third Row:
+	&	
+	&
+	&
+	&
+	\node (12) [terminal] {$12$}; &	
+	\node (13) [terminal] {$13$}; &
+	\node (14) [terminal] {$14$}; &\\
+	};
+	\path
+	(1) edge[->] (2)
+	(1) edge[->] (7)
+	(2) edge[->] (3)
+	(2) edge[->] (7)
+	(2) edge[->] (8)
+	(3) edge[->] (4)
+	(3) edge[->] (8)
+	(3) edge[->] (9)
+	(4) edge[->] (5)
+	(5) edge[->] (6)
+	(5) edge[->] (10)
+	(6) edge[->] (11)
+	(7) edge[->] (8)
+	(8) edge[->] (9)
+	(9) edge[->] (10)
+	(9) edge[->] (12)
+	(10) edge[->] (11)
+	(10) edge[->] (13)
+	(11) edge[->] (14)
+	(12) edge[->] (13)
+	(13) edge[->] (14)
+	;
+\end{tikzpicture}
+\end{center}
+ANSWER
+
+\newpage
+% ******************* PROBLEM 3 *********************
+\section*{{\fontfamily{qcr}\selectfont Problem 3}}
+\textit{(10 pts) Ron and Hermione are having a competition to see who can compute the $n$th Lucas number $L_n$ more quckly, without resorting to magic. Recall that the $n$th Lucas number is defined as $L_n=L_{n-1}+L_{n-2}$ for $n>1$ with base cases $L_0=2$ and $L_1=1$. Ron opens with the classic recursive algorithm:}
+\begin{small}
+\begin{verbatim}
+Luc(n) {
+    if n==0 { return 2 }
+    else if n==1 { return 1 }
+    else { return Luc(n-1) + Luc(n-2) }
+}
+\end{verbatim}
+\end{small}
+\textit{which he claims takes $R(n)=R(n-1)+R(n-2)+c=O(\phi^n)$ time.}
+\begin{enumerate}
+\item[(a)] \textit{Hermione counters with a dynamic programming approach that "memoizes" (a.k.a. memorizes) the intermediate Lucas numbers by storing them in an array $L[n]$. She claims this allows an algorithm to compute larger Lucas numbers more quickly, and writes down the following algorithm:}
+\begin{small}
+\begin{verbatim}
+MemLuc(n) {
+    if n==0 { return 2 }
+    else if n==1 { return 1 }
+    else { 
+        if (L[n] == undefined) { L[n] = MemLuc(n-1) + MemLuc(n-2) }
+        return L[n]
+    }
+}
+\end{verbatim}
+\end{small}
+\begin{enumerate}
+\item[(i)] \textit{Describe the behavior of \textbf{MemLuc(n)} in terms of a traversal of a computation tree. Describe how array $L$ is filled.}
+\\\\
+ANSWER
+\\
+\item[(ii)] \textit{Determine the asymptotic running time of M\textbf{MemLuc(n)}. Prove your claim is correct by induction on the contents of the array.}
+\\\\
+ANSWER
+\\
+\end{enumerate}
+\item[(b)] \textit{Ron then claims that he can beat Hermione's dynamic programming algorithm in both time and space with another dynamic programming algorithm, which eliminates the recursion completely and instead builds up directly to the final solution by filling in the $L$ array in order. Ron's new algorithm is:}
+\begin{small}
+\begin{verbatim}
+DynLuc(n) {
+    L[0] = 2, L[1] = 1
+    for i = 2 to n { L[i] = L[i-1] + L[i-2] }
+    return L[n]
+}
+\end{verbatim}
+\end{small}
+\textit{Determine the time and space usage of \textbf{DynLuc(n)}. Justify your answers and compare them to the answers in part (3a).}\\\\
+ANSWER
+\\
+\item[(c)] \textit{With a gleam in her eye, Hermione tells Ron that she can do everything he can do better: she can compute the $n$th Lucas number even faster because intermediate results do not need to be stored. Over Ron's pathetic cries, Hermione says:}
+\begin{small}
+\begin{verbatim}
+FasterLuc(n) {
+    a = 2, b = 1
+    for i = 2 to n
+        c = a + b
+        a = b
+        b = c
+    end
+    return a
+}
+\end{verbatim}
+\end{small}
+\textit{Ron giggles and says that Hermione has a bug in her algorithm. Determine the error, give its correction, and then determine the time and space usage of FasterLuc(n). Justify your claims.}\\\\
+ANSWER
+\\
+\item[(d)] \textit{In a table, list each of the four algorithms as rows and for each give its asymptotic time and space requirements, along with the implied or explicit data structures that each requires. Briefly discuss how these different approaches compare, and where their improvements come from. (Hint: what data structure do all recursive algorithms implicitly use?)}
+\\\\
+ANSWER
+\\
+\item[(e)] \textit{(5 pts extra credit) Implement \textbf{FasterLuc} and then compute $L_n$, where n is the four digit number representing your MMDD, and report the first 5 digits of $L_n$. Now, assuming that it takes one nanosecond per operation, estimate the number of years required to compute $L_n$ using Ron's classic recursive algorithm and compare that to the clock time required to compute $L_n$ using \textbf{FasterLuc}.}
+\\\\
+ANSWER
+\end{enumerate}
+
+% ---------------------------------------------------
+
+}
+\end{document}

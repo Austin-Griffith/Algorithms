@@ -1,0 +1,51 @@
+Questions:
+
+
+
+logistic question in ShareLatex
+
+
+
+
+
+
+most optimal/near optimal output for spear & men assignments
+
+Do you expect us to have an explict greedy Solution for #3
+	- my algo produces a near optimal solution without computing all possible combo's hence the instructionin the pdf 
+	- what justification is expected for a neal optimal solution to recieve full credit? 
+
+
+
+
+
+
+
+Exam Problem 5 loop invarient 
+
+"""
+loop invariant 1: pplHit[a][b] = True if person b was splashed by a for all a < i else False
+
+	initialization:
+		pplHit is initialized to a list of all False -- there is no a < 0, b < 0 so there is no True
+	maintenance:
+
+		((loop invariant 2: pplDistance[i][minDistAt] is the minimum of all pplDistance[i][b] for b < j
+			
+			initialization: minDistAt = 0 representing our belief that person 0 is being splashed by person i -- b = 0 < j = 1
+			maintenance:  minDistAt = index of min distance between person i for all people m for 0 ≤ m ≤ j 
+			termination: j = length of the matrix @ i 
+		))
+
+		we find the minimum pplDistance[i][b] for 0 ≤ b < len( pplDistance )
+			then b must be the person that i splashes
+			so we update pplHit accordingly
+
+		now the loop invariant holds for all a ≤ i 
+
+
+	termination:
+		i = len( pplDistance ), so we know that the invariant holds for all a < len( pplDistance ),
+			that is, each person has splashed exactly one person, represented by pplHit
+ 	
+"""

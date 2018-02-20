@@ -1,0 +1,26 @@
+
+spears = [3, 4, 2, 5, 8 ];
+blokes = [6, 3, 5, 8, 2 ];
+
+indexCoupledSpears = []
+for i in range( len( spears ) ):
+  indexCoupledSpears.append( ( i, spears[i] ) )
+print( indexCoupledSpears );
+
+indexCoupledBlokes = []
+for i in range( len( blokes ) ):
+  indexCoupledBlokes.append( ( i, blokes[i] ) )
+print( indexCoupledBlokes )
+
+# sort indexCoupledSpears by second element of pair
+# sort indexCoupledBlokes by second element of pair
+
+
+couplings = [];
+
+for i in range( len( indexCoupledSpears ) ):
+  couplings.append( ( indexCoupledSpears[i][0], indexCoupledBlokes[i][0] ) );
+  
+  #indexCoupledSpears[i][1] = originalSpearList[ indexCoupledSpears[i][0] ]
+  
+print( couplings )
